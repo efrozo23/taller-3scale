@@ -1,0 +1,33 @@
+#Comandos
+
+oc login ...
+oc get pods
+oc logs -f <pod>
+oc rsh <pods>
+oc create configmap configmap-test --from-literal=spring.port=8080 --from-literal=x=y
+oc get configmap
+oc describe configmap <nameconfig>
+oc edit configmap  <nameconfig>
+oc delete configmap  <nameconfig>
+oc get svc
+oc expose svc/<namesvc>
+oc get route 
+oc get dc 
+oc rollout latest dc/<namedc>
+
+
+#Deploy
+mvn clean fabric8:deploy -Popenshift -Dfabric8.namespace=<namespace> -DskipTests
+
+#pasos para crear api en 3Scale
+Se crea el usuario
+Se integra la api que tenemos por defecto
+Se define la base url publica
+Se crean los metodos de nuestra api
+Se definen los headers que se envian para la auth
+#Credenciales
+username: userprueba
+password: 123456
+#Comando de prueba
+curl -k -v  "https://api-2445582799156.staging.gw.apicast.io:443/get/test" -H"app_id: 8e25f611" -H"app_key: 7effc83a10626b20a2fb0a3be615d55a"
+
