@@ -1,17 +1,33 @@
-kind: Deployment
 spec:
-  replicas: 1
   template:
     spec:
       containers:
-        - 
-          resources:
-            requests:
-              cpu: "0.2"
-              memory: 256Mi
-            limits:
-              cpu: "1.0"
-              memory: 256Mi
-          env:
-          - name: SPRING_APPLICATION_JSON
-            value: '{"server":{"undertow":{"io-threads":1, "worker-threads":2 }}}'
+        - env:
+            - name: SPRING_APPLICATION_JSON
+              value: '{"server":{"undertow":{"io-threads":10, "worker-threads":20 }}}'
+            - name: JAVA_OPTIONS
+              value: '-Xms512m -Xmx512m -Dfile.encoding=ISO-8859-1'
+          envFrom:
+            - configMapRef:
+                name: myapp-configmap
+          readinessProbe:
+            httpGet:
+              path: /healthcheck
+              port: 8080
+              scheme: HTTP
+            failureThreshold: 3
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 120
+          livenessProbe:
+            httpGet:
+              path: /healthcheck
+              port: 8080
+              scheme: HTTP
+            failureThreshold: 2
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 120
+         

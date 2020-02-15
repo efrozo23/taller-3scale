@@ -33,20 +33,12 @@ public class ApplicationTest {
     public void testGet() throws Exception {
 
         // Call the REST API
-        ResponseEntity<String> response = restTemplate.getForEntity("http://localhost:8081/api/hello-service",
+        ResponseEntity<String> response = restTemplate.getForEntity("http://localhost:" + serverPort + "/healthcheck",
                 String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody().contains("Hello"));
+  
     }
 
-    @Test
-    public void testPost() throws Exception {
-
-        // Call the REST API
-        ResponseEntity<String> response = restTemplate.getForEntity("http://localhost:8081/api/hello-service",
-                String.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody().contains("Hello"));
-    }
+ 
 
 }

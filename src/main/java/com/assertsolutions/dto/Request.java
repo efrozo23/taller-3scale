@@ -19,15 +19,14 @@ public class Request {
     @JsonProperty
     @ApiModelProperty(dataType = "String")
     @Size(min = 10, max = 45)
-    private String param;
+    public  String cc;
+    
 
-    public String getParam() {
-        return param;
-    }
-
-    public void setParam(String param) {
-        this.param = param;
-    } 
+    @JsonProperty
+    @ApiModelProperty(dataType = "String")
+    @Size(min = 10, max = 45)
+    public  String name;
+    
     
 
 }

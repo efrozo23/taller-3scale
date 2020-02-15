@@ -1,13 +1,16 @@
 package com.assertsolutions.routes;
 
+import org.apache.camel.Exchange;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.model.dataformat.JsonLibrary;
 import org.apache.camel.model.rest.RestBindingMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
 import com.assertsolutions.beans.ResponseHandler;
@@ -47,24 +50,33 @@ public class RestDslMainRoute extends RouteBuilder {
             .apiProperty("api.title",  env.getProperty("api.title"))
             .apiProperty("api.version", env.getProperty("api.version"));
         
-        rest("/hello-service").description(env.getProperty("api.description"))
-            .consumes("application/json")
-            .produces("application/json")
+        rest().description(env.getProperty("api.description"))
+            .consumes(MediaType.APPLICATION_JSON_UTF8_VALUE)
+            .produces(MediaType.APPLICATION_JSON_UTF8_VALUE)
         
-        .get().description(env.getProperty("api.description.service")).outType(Response.class)
+        .get(env.getProperty("endpoint.healthcheck")).description(env.getProperty("endpoint.healthcheck.description")).outType(String.class)
             .responseMessage().code(200).message("All users successfully returned").endResponseMessage()
-            .to("direct:update-user")
-         .post().description(env.getProperty("api.description.service")).type(Request.class).description(
-                 env.getProperty("api.description.input.post")).outType(Response.class) 
+            .route().setBody(constant("OK")).endRest()
+        .get(env.getProperty("endpoint.get_text")).description(env.getProperty("endpoint.get.description"))
+            .responseMessage().code(200).message("All users successfully returned").endResponseMessage()
+            .route().removeHeader("*").setHeader("Content-Type", simple(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .bean(ResponseHandler.class).removeHeader("*")
+            .setHeader("Accept", simple(MediaType.APPLICATION_JSON_UTF8_VALUE)).setHeader(Exchange.HTTP_RESPONSE_CODE, constant(200)).endRest()
+         .post(env.getProperty("endpoint.save")).description(env.getProperty("endpoint.save.description")).type(Request.class).description(
+                 env.getProperty("endpoint.save.description")).outType(Response.class) 
              .responseMessage().code(200).message("All users successfully created").endResponseMessage()
              .to("direct:update-user");
        
         from("direct:update-user")
+        	.log(LoggingLevel.INFO,log,"Body: ${body}")
             .bean(ResponseHandler.class)
-            .log(LoggingLevel.INFO,log,"Body: ${body}")
-            .setHeader("Content-Type", simple("application/json"))
-            .setHeader("Accept", simple("application/json"))
+            .setHeader("Content-Type", simple(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .setHeader("Accept", simple(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(200))
             .log(LoggingLevel.INFO,log,"Response Body: ${body}");
+        
+        
+       
         // @formatter:on
     }
 

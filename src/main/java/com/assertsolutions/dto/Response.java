@@ -24,7 +24,7 @@ public class Response implements Serializable {
 
     private static final long serialVersionUID = -6104876573750302537L;
 
-    @JsonProperty
+    @JsonProperty("status")
     @ApiModelProperty(dataType = "String")
     private String param;
 
