@@ -31,3 +31,14 @@ password: 123456
 #Comando de prueba
 curl -k -v  "https://api-2445582799156.staging.gw.apicast.io:443/get/test" -H"app_id: 8e25f611" -H"app_key: 7effc83a10626b20a2fb0a3be615d55a"
 
+# Valida que imagenes tiene 
+oc get is
+#Importar
+ oc import-image <image_stream_name>[:<tag>] --from=<docker_image_repo> --confirm
+ 
+oc import-image sso-test --from=registry.redhat.io/redhat-sso-7/sso73-openshift --confirm
+
+$ oc get -o yaml --export all > <yaml_filename>
+
+
+
