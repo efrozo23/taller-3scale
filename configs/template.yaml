@@ -1,0 +1,100 @@
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  creationTimestamp: "2020-02-11T06:34:11Z"
+  generation: 10
+  name: example
+  namespace: taller
+  resourceVersion: "201499082"
+  selfLink: /apis/apps.openshift.io/v1/namespaces/taller/deploymentconfigs/example
+  uid: 83645145-4c98-11ea-afdb-0a580a82008f
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    app: hello-openshift
+  strategy:
+    activeDeadlineSeconds: 21600
+    resources: {}
+    rollingParams:
+      intervalSeconds: 1
+      maxSurge: 25%
+      maxUnavailable: 25%
+      timeoutSeconds: 600
+      updatePeriodSeconds: 1
+    type: Rolling
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: hello-openshift
+    spec:
+      containers:
+      - env:
+        - name: SSO_ADMIN_USERNAME
+          value: admin
+        - name: SSO_ADMIN_PASSWORD
+          value: admin
+        - name: SSO_REALM
+          value: assertrealm
+        - name: SSO_SERVICE_USERNAME
+          value: admin
+        - name: SSO_SERVICE_PASSWORD
+          value: admin
+        - name: JGROUPS_PING_PROTOCOL
+          value: openshift.DNS_PING
+        - name: OPENSHIFT_DNS_PING_SERVICE_NAME
+          value: sso-ultimo-ping
+        - name: OPENSHIFT_DNS_PING_SERVICE_PORT
+          value: "8080"
+        - name: X509_CA_BUNDLE
+          value: /var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt
+        - name: JGROUPS_CLUSTER_PASSWORD
+          value: 1OYuTHuoIKjvU52rQV75uLRsnBMjDJqG
+        - name: SSO_HOSTNAME
+        - name: DB_MIN_POOL_SIZE
+        - name: DB_MAX_POOL_SIZE
+        - name: DB_TX_ISOLATION
+        image: registry.redhat.io/redhat-sso-7/sso73-openshift
+        imagePullPolicy: Always
+        name: hello-openshift
+        ports:
+        - containerPort: 9990
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      imagePullSecrets:
+      - name: 6456124-taller-pull-secret
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+  test: false
+  triggers:
+  - type: ConfigChange
+status:
+  availableReplicas: 1
+  conditions:
+  - lastTransitionTime: "2020-02-14T21:20:08Z"
+    lastUpdateTime: "2020-02-14T21:20:11Z"
+    message: replication controller "example-8" successfully rolled out
+    reason: NewReplicationControllerAvailable
+    status: "True"
+    type: Progressing
+  - lastTransitionTime: "2020-03-10T02:36:19Z"
+    lastUpdateTime: "2020-03-10T02:36:19Z"
+    message: Deployment config has minimum availability.
+    status: "True"
+    type: Available
+  details:
+    causes:
+    - type: ConfigChange
+    message: config change
+  latestVersion: 8
+  observedGeneration: 10
+  readyReplicas: 1
+  replicas: 1
+  unavailableReplicas: 0
+  updatedReplicas: 1
